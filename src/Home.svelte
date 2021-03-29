@@ -1,14 +1,12 @@
 <script>
     import { ajaxFetchCall } from "./utils";
-    const getHome = async () => {
-        await ajaxFetchCall("http://localhost:8080/");
-    };
+    import { Link } from "svelte-navigator";
 </script>
 
 <div>
     <div class="card card-med">
         <h3 class="card-heading">Create</h3>
-        <h4 class="card-item">Quiz</h4>
+        <Link to="/create/quiz"><h4 class="card-item">Quiz</h4></Link>
     </div>
 </div>
 

@@ -1,5 +1,7 @@
 import { auth } from "./firebase";
+import { LAQZBackendURL } from "./config";
 export async function ajaxFetchCall(url, reqObj) {
+  url = LAQZBackendURL + url
   let token = "";
   token = await auth.currentUser.getIdToken();
   const defaultObj = {

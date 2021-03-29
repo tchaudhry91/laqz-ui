@@ -1,6 +1,7 @@
 <script>
     import Nav from "./Nav.svelte";
     import Home from "./Home.svelte";
+    import CreateQuiz from "./CreateQuiz.svelte";
     import { Router, Route } from "svelte-navigator";
 </script>
 
@@ -12,7 +13,9 @@
                 <Home />
             </Route>
             <Route path="/create/*">
-                <Route path="/quiz" />
+                <Route path="/quiz">
+                    <CreateQuiz />
+                </Route>
             </Route>
         </div>
     </Router>
