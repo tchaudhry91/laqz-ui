@@ -6,5 +6,11 @@
 </script>
 
 <div>
-    <button on:click={getHome} class="btn"> Get Home </button>
+    <div class="card card-med">
+        <h3 class="card-heading">Create</h3>
+        <h4 class="card-item">Quiz</h4>
+    </div>
 </div>
+
+<style>
+</style>

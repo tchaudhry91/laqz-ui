@@ -1,10 +1,11 @@
 <script>
+    import { Link } from "svelte-navigator";
     import { auth, googleProvider } from "./firebase";
     import { authState } from "rxfire/auth";
 
     let showLogout = false;
-
     let user;
+
     const unsubscribe = authState(auth).subscribe((u) => (user = u));
 
     const login = () => {
@@ -13,7 +14,7 @@
 
     const logout = () => {
         auth.signOut();
-        user = undefined;
+        user = null;
     };
 
     const toggleShowLogout = () => {
@@ -22,11 +23,7 @@
 </script>
 
 <div class="navbar">
-    <h1>LAQZ UI</h1>
-    <ul class="nav-menu-list">
-        <li>Home</li>
-        <li>Quiz</li>
-    </ul>
+    <Link to="/"><h1>LAQZ</h1></Link>
     <ul>
         {#if user}
             <li />
@@ -50,11 +47,15 @@
 </div>
 
 <style>
+    h1 {
+        color: var(--dark-color);
+    }
     button {
         border-radius: 4px;
     }
     li {
         padding-right: 1rem;
+        color: var(--dark-color);
     }
     .dropdown {
         position: relative;
