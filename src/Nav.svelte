@@ -1,12 +1,9 @@
 <script>
     import { Link } from "svelte-navigator";
     import { auth, googleProvider } from "./firebase";
-    import { authState } from "rxfire/auth";
 
     let showLogout = false;
-    let user;
-
-    const unsubscribe = authState(auth).subscribe((u) => (user = u));
+    export let user;
 
     const login = () => {
         auth.signInWithPopup(googleProvider);
