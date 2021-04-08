@@ -2,10 +2,11 @@
     import Nav from "./Nav.svelte";
     import Home from "./Home.svelte";
     import CreateQuiz from "./CreateQuiz.svelte";
-    import { Router, Route } from "svelte-navigator";
+    import { Router, Route, useParams } from "svelte-navigator";
     import { authState } from "rxfire/auth";
     import { auth, googleProvider } from "./firebase";
     import QuizView from "./QuizView.svelte";
+    import CreateQuestion from "./CreateQuestion.svelte";
 
     let user;
     const unsubscribe = authState(auth).subscribe((u) => (user = u));
@@ -22,9 +23,12 @@
                 <Route path="/quiz">
                     <CreateQuiz />
                 </Route>
+                <Route path="/quiz/:id/question" let:params>
+                    <CreateQuestion quizID={params.id} {user} />
+                </Route>
             </Route>
             <Route path="/quiz/:id" let:params>
-                <QuizView quizID={params.id} user={user}/>
+                <QuizView quizID={params.id} {user} />
             </Route>
         </div>
     </Router>

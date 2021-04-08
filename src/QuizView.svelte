@@ -25,7 +25,6 @@
 
     async function handleDeleteQuiz() {
         let resp = await deleteQuiz(quizID);
-        console.log(resp);
         navigate("/");
     }
 
@@ -37,6 +36,10 @@
             }
         });
         return found;
+    }
+
+    function handleBuildQuestionsClick() {
+        navigate("/create/quiz/" + quizID + "/question");
     }
 </script>
 
@@ -52,6 +55,10 @@
                 class="btn btn-danger btn-small centerify"
                 on:click={handleDeleteQuiz}>Delete</button
             >
+            <button
+                class="btn btn-dark centerify"
+                on:click={handleBuildQuestionsClick}>Add Questions</button
+            >
         {/if}
     {:catch error}
         {error.message}
@@ -61,6 +68,7 @@
 <style>
     .centerify {
         text-align: center;
-        margin: auto;
+        margin-right: auto;
+        margin-left: auto;
     }
 </style>
