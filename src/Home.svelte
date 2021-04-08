@@ -19,7 +19,7 @@
             {#await myQuizzesPromise then resp}
                 {#each resp.quizzes as qz}
                     <Link to="/quiz/{qz.ID}/"
-                        ><h4 class="card-item">{qz.Name}</h4></Link
+                        ><h4 class="card-item">{qz.name}</h4></Link
                     >
                 {/each}
             {:catch error}

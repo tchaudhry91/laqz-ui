@@ -2,17 +2,25 @@
     import { navigate } from "svelte-navigator";
     import { ajaxFetchCall } from "./utils";
     let name = "";
+    let tagsString = "";
+
+    let tags = [];
 
     const createQuiz = async (e) => {
         e.preventDefault();
+        tags = tagsString.split(",");
+        tags.forEach((t, i, arr) => {
+            arr[i] = t.trim();
+        });
         const reqBody = {
             name: name,
+            tags: tags,
         };
-        await ajaxFetchCall("/quiz/", {
+        const resp = await ajaxFetchCall("/quiz/", {
             method: "POST",
             body: JSON.stringify(reqBody),
         });
-        navigate("/");
+        navigate("/quiz/" + resp.quiz.ID);
     };
 </script>
 
@@ -27,6 +35,13 @@
                     id="quizName"
                     type="text"
                     placeholder="Quiz Name"
+                />
+                <label for="quizTags">Tags (comma separated)</label>
+                <input
+                    bind:value={tagsString}
+                    id="quizTags"
+                    type="text"
+                    placeholder="General Knowledge"
                 />
             </div>
             <div class="centerify">

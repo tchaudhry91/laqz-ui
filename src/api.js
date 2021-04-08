@@ -5,3 +5,15 @@ export function getMyQuizzes() {
     method: "GET",
   });
 };
+
+export function getQuiz(id) {
+  return ajaxFetchCall("/quiz/" + id + "/", {
+    method: "GET",
+  });
+}
+
+export function deleteQuiz(id) {
+  return ajaxFetchCall("/quiz/" + id + "/", {
+    method: "DELETE",
+  });
+}
