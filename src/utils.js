@@ -44,3 +44,20 @@ export async function ajaxFetchCall(url, reqObj) {
     })
     .catch((err) => Promise.reject(err));
 }
+
+
+export function getTags(tt) {
+  let tags = [];
+  tt.forEach((t, id, arr) => {
+    tags.push(t.name);
+  });
+  return tags.join(", ");
+}
+
+export function getCollaborators(cc) {
+  let collaborators = [];
+  cc.forEach((c, id, arr) => {
+    collaborators.push(c.name);
+  });
+  return collaborators.join(", ");
+}

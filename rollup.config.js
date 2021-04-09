@@ -6,6 +6,7 @@ import { terser } from 'rollup-plugin-terser';
 import replace from "@rollup/plugin-replace";
 import css from 'rollup-plugin-css-only';
 import dotenv from "dotenv";
+import postcss from 'rollup-plugin-postcss';
 
 dotenv.config({ path: "./creds.env" });
 const production = !process.env.ROLLUP_WATCH;
@@ -39,11 +40,13 @@ export default {
 		name: 'app',
 		file: 'public/build/bundle.js'
 	},
+
 	plugins: [
 		svelte({
 			compilerOptions: {
 				// enable run-time checks when not in production
-				dev: !production
+				dev: !production,
+
 			}
 		}),
 		replace({
@@ -69,8 +72,8 @@ export default {
 			browser: true,
 			dedupe: ['svelte']
 		}),
+		postcss(),
 		commonjs(),
-
 		// In dev mode, call `npm run start` once
 		// the bundle has been generated
 		!production && serve(),

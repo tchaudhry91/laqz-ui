@@ -12,10 +12,25 @@
     const unsubscribe = authState(auth).subscribe((u) => (user = u));
 </script>
 
+<svelte:head>
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.2/css/bulma.min.css"
+        integrity="sha512-byErQdWdTqREz6DLAA9pCnLbdoGGhXfU6gm1c8bkf7F51JVmUBlayGe2A31VpXWQP+eiJ3ilTAZHCR3vmMyybA=="
+        crossorigin="anonymous"
+    />
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+        integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+        crossorigin="anonymous"
+    />
+</svelte:head>
+
 <main>
     <Router primary={false}>
         <Nav {user} />
-        <div class="container">
+        <div class="container is-fluid">
             <Route path="/">
                 <Home {user} />
             </Route>
@@ -33,6 +48,3 @@
         </div>
     </Router>
 </main>
-
-<style>
-</style>

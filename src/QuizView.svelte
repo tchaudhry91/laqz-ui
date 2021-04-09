@@ -2,26 +2,11 @@
     import { navigate } from "svelte-navigator";
 
     import { getQuiz, deleteQuiz } from "./api";
+    import { getTags, getCollaborators } from "./utils";
     export let quizID;
     export let user;
 
     const quizPromise = getQuiz(quizID);
-
-    function getTags(tt) {
-        let tags = [];
-        tt.forEach((t, id, arr) => {
-            tags.push(t.name);
-        });
-        return tags.join(", ");
-    }
-
-    function getCollaborators(cc) {
-        let collaborators = [];
-        cc.forEach((c, id, arr) => {
-            collaborators.push(c.name);
-        });
-        return collaborators.join(", ");
-    }
 
     async function handleDeleteQuiz() {
         let resp = await deleteQuiz(quizID);
