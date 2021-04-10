@@ -16,10 +16,14 @@
             name: name,
             tags: tags,
         };
-        const resp = await ajaxFetchCall("/quiz/", {
-            method: "POST",
-            body: JSON.stringify(reqBody),
-        });
+        const resp = await ajaxFetchCall(
+            "/quiz/",
+            {
+                method: "POST",
+                body: JSON.stringify(reqBody),
+            },
+            true
+        );
         navigate("/quiz/" + resp.quiz.ID);
     };
 </script>

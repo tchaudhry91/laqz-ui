@@ -15,14 +15,14 @@
     };
 </script>
 
-<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+<nav class="navbar is-dark" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
         <Link to="/">
-            <h1 class="navbar-item title">LAQZ</h1>
+            <h1 class="navbar-item title has-text-light">LAQZ</h1>
         </Link>
     </div>
 
-    <div id="navbarBasicExample" class="navbar-menu is-active">
+    <div class="navbar-menu is-active">
         <div class="navbar-start">
             <Link class="navbar-item" to="/">Home</Link>
 

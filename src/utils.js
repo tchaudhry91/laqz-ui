@@ -1,13 +1,15 @@
 import { auth } from "./firebase";
 import { LAQZBackendURL } from "./config";
-export async function ajaxFetchCall(url, reqObj) {
+export async function ajaxFetchCall(url, reqObj, tokenReq) {
   url = LAQZBackendURL + url
   let token = "";
-  while (!auth.currentUser) {
-    await new Promise(r => setTimeout(r, 500));
-  }
+  if (tokenReq) {
+    while (!auth.currentUser) {
+      await new Promise(r => setTimeout(r, 500));
+    }
 
-  token = await auth.currentUser.getIdToken();
+    token = await auth.currentUser.getIdToken();
+  }
   const defaultObj = {
     method: "GET",
     headers: {
