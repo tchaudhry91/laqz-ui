@@ -28,40 +28,53 @@
     };
 </script>
 
-<div class="container-column">
-    <h2 class="centerify">Create a Quiz!</h2>
-    <div class="form-container">
-        <form class="form-inline">
-            <div class="form-group">
-                <label for="quizName">Quiz Name</label>
-                <input
-                    bind:value={name}
-                    id="quizName"
-                    type="text"
-                    placeholder="Quiz Name"
-                />
-                <label for="quizTags">Tags (comma separated)</label>
+<div class="box mt-5 half-width centerify">
+    <div class="block">
+        <h2 class="title has-text-centered">Create a Quiz!</h2>
+    </div>
+    <div class="block">
+        <div class="container">
+            <div class="field">
+                <label for="quizName" class="label">Quiz Name</label>
+                <div id="quizName" class="control">
+                    <input
+                        bind:value={name}
+                        class="input"
+                        type="text"
+                        placeholder="Quiz Name"
+                    />
+                </div>
+            </div>
+            <div class="field">
+                <label for="quizTags" class="label"
+                    >Tags (comma separated)</label
+                >
                 <input
                     bind:value={tagsString}
+                    class="input"
                     id="quizTags"
                     type="text"
                     placeholder="General Knowledge"
                 />
             </div>
-            <div class="centerify">
+            <div class="field is-grouped">
                 <button
-                    class="btn btn-dark centerify"
+                    class="button is-primary centerify"
                     type="submit"
                     on:click={createQuiz}>Create</button
                 >
             </div>
-        </form>
+        </div>
     </div>
 </div>
 
 <style>
     .centerify {
-        text-align: center;
-        margin: auto;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    .half-width {
+        max-width: 60%;
     }
 </style>

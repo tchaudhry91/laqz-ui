@@ -1,15 +1,17 @@
 <script>
     import { navigate } from "svelte-navigator";
 
-    import { getQuiz, deleteQuiz } from "./api";
+    import { getQuiz, deleteQuiz, toggleVisibility } from "./api";
     import { getTags, getCollaborators } from "./utils";
     export let quizID;
     export let user;
 
-    const quizPromise = getQuiz(quizID);
+    let quizPromise = getQuiz(quizID);
+
+    let isPublishLoading = false;
 
     async function handleDeleteQuiz() {
-        let resp = await deleteQuiz(quizID);
+        await deleteQuiz(quizID);
         navigate("/");
     }
 
@@ -26,31 +28,59 @@
     function handleBuildQuestionsClick() {
         navigate("/create/quiz/" + quizID + "/question");
     }
+
+    async function handleToggleVisibility() {
+        isPublishLoading = true;
+        await toggleVisibility(quizID);
+        quizPromise = getQuiz(quizID);
+        isPublishLoading = false;
+    }
 </script>
 
-<div class="container-column">
-    {#await quizPromise then resp}
-        <h1 class="centerify">{resp.quiz.name}</h1>
-        <h4 class="centerify">
-            By: {getCollaborators(resp.quiz.collaborators)}
-        </h4>
-        <h4 class="centerify">Tags: {getTags(resp.quiz.tags)}</h4>
-        {#if checkCollaborator(resp.quiz.collaborators)}
-            <button
-                class="btn btn-danger btn-small centerify"
-                on:click={handleDeleteQuiz}>Delete</button
-            >
-            <button
-                class="btn btn-dark centerify"
-                on:click={handleBuildQuestionsClick}>Add Questions</button
-            >
-        {/if}
-    {:catch error}
-        {error.message}
-    {/await}
+<div class="container margin-top">
+    <div class="box">
+        {#await quizPromise then resp}
+            <div class="block">
+                <h1 class="title centerify">{resp.quiz.name}</h1>
+                <h4 class="is-size-6 centerify">
+                    By: {getCollaborators(resp.quiz.collaborators)}
+                </h4>
+                <h4 class="is-size-6 centerify">
+                    Tags: {getTags(resp.quiz.tags)}
+                </h4>
+            </div>
+            {#if checkCollaborator(resp.quiz.collaborators)}
+                <div class="block is-centered has-text-centered">
+                    <button
+                        class="button is-info {isPublishLoading === false
+                            ? ''
+                            : 'is-loading'}"
+                        on:click={handleToggleVisibility}
+                    >
+                        {resp.quiz.private === true
+                            ? "Publish"
+                            : "Unpublish"}</button
+                    >
+                    <button
+                        class="button is-primary"
+                        on:click={handleBuildQuestionsClick}
+                        >Add Questions</button
+                    >
+                    <button class="button is-danger" on:click={handleDeleteQuiz}
+                        >Delete</button
+                    >
+                </div>
+            {/if}
+        {:catch error}
+            {error.message}
+        {/await}
+    </div>
 </div>
 
 <style>
+    .margin-top {
+        margin-top: 1.5rem;
+    }
     .centerify {
         text-align: center;
         margin-right: auto;

@@ -1,1 +1,1 @@
-export const LAQZBackendURL = "http://localhost:8080"
+export const LAQZBackendURL = LAQZ_BACKEND
