@@ -12,10 +12,12 @@ export function getPublicQuizzes() {
   }, false);
 };
 
-export function getQuiz(id) {
+export function getQuiz(id, user) {
+  let sendToken = false
+  if (user) { sendToken = "true" };
   return ajaxFetchCall("/quiz/" + id + "/", {
     method: "GET",
-  }, true);
+  }, sendToken);
 }
 
 export function deleteQuiz(id) {

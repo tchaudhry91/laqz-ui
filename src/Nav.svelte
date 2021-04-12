@@ -5,7 +5,6 @@
     export let user;
 
     const login = () => {
-        console.log(user);
         auth.signInWithPopup(googleProvider);
     };
 

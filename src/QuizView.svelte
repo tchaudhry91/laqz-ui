@@ -6,7 +6,7 @@
     export let quizID;
     export let user;
 
-    let quizPromise = getQuiz(quizID);
+    let quizPromise = getQuiz(quizID, user);
 
     let isPublishLoading = false;
 
@@ -15,10 +15,13 @@
         navigate("/");
     }
 
-    function checkCollaborator(collaborators) {
+    function checkCollaborator(u, collaborators) {
+        if (u === null || u === undefined) {
+            u = { email: "" };
+        }
         let found = false;
         collaborators.forEach((c, id, arr) => {
-            if (c.email === user.email) {
+            if (c.email === u.email) {
                 found = true;
             }
         });
@@ -32,7 +35,7 @@
     async function handleToggleVisibility() {
         isPublishLoading = true;
         await toggleVisibility(quizID);
-        quizPromise = getQuiz(quizID);
+        quizPromise = getQuiz(quizID, user);
         isPublishLoading = false;
     }
 </script>
@@ -48,8 +51,11 @@
                 <h4 class="is-size-6 centerify">
                     Tags: {getTags(resp.quiz.tags)}
                 </h4>
+                <h4 class="is-size-6 centerify">
+                    Questions: {resp.quiz.questions.length}
+                </h4>
             </div>
-            {#if checkCollaborator(resp.quiz.collaborators)}
+            {#if checkCollaborator(user, resp.quiz.collaborators)}
                 <div class="block is-centered has-text-centered">
                     <button
                         class="button is-info {isPublishLoading === false
