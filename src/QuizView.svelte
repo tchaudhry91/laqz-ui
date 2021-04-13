@@ -1,7 +1,7 @@
 <script>
     import { navigate } from "svelte-navigator";
 
-    import { getQuiz, deleteQuiz, toggleVisibility } from "./api";
+    import { getQuiz, deleteQuiz, toggleVisibility, createPS } from "./api";
     import { getTags, getCollaborators } from "./utils";
     export let quizID;
     export let user;
@@ -32,6 +32,14 @@
         navigate("/create/quiz/" + quizID + "/question");
     }
 
+    async function handlePlay() {
+        // Create a new PlaySession
+        const resp = await createPS(quizID);
+
+        // navigate to play page
+        navigate("/quiz/" + quizID + "/play/" + resp.play_session.code);
+    }
+
     async function handleToggleVisibility() {
         isPublishLoading = true;
         await toggleVisibility(quizID);
@@ -58,7 +66,8 @@
             {#if checkCollaborator(user, resp.quiz.collaborators)}
                 <div class="block is-centered has-text-centered">
                     <button
-                        class="button is-info {isPublishLoading === false
+                        class="button is-info is-small {isPublishLoading ===
+                        false
                             ? ''
                             : 'is-loading'}"
                         on:click={handleToggleVisibility}
@@ -68,13 +77,19 @@
                             : "Unpublish"}</button
                     >
                     <button
-                        class="button is-primary"
+                        class="button is-primary is-small"
                         on:click={handleBuildQuestionsClick}
                         >Add Questions</button
                     >
-                    <button class="button is-danger" on:click={handleDeleteQuiz}
-                        >Delete</button
+                    <button
+                        class="button is-danger is-small"
+                        on:click={handleDeleteQuiz}>Delete</button
                     >
+                </div>
+                <div class="block is-centered has-text-centered">
+                    <button class="button is-link" on:click={handlePlay}>
+                        Play!
+                    </button>
                 </div>
             {/if}
         {:catch error}

@@ -7,6 +7,7 @@
     import { auth, googleProvider } from "./firebase";
     import QuizView from "./QuizView.svelte";
     import CreateQuestion from "./CreateQuestion.svelte";
+    import PlaySession from "./PlaySession.svelte";
 
     let user;
     const unsubscribe = authState(auth).subscribe((u) => (user = u));
@@ -44,6 +45,9 @@
             </Route>
             <Route path="/quiz/:id" let:params>
                 <QuizView quizID={params.id} {user} />
+            </Route>
+            <Route path="/quiz/:id/play/:code" let:params>
+                <PlaySession quizID={params.id} {user} code={params.code} />
             </Route>
         </div>
     </Router>

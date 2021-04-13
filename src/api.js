@@ -49,3 +49,18 @@ export function toggleVisibility(quizID) {
     })
   }, true);
 }
+
+export function getPS(code) {
+  return ajaxFetchCall("/ps/" + code + "/", {
+    method: "GET"
+  }, true);
+}
+
+export function createPS(quizID) {
+  return ajaxFetchCall("/ps/create", {
+    method: "POST",
+    body: JSON.stringify({
+      "quiz_id": parseInt(quizID)
+    })
+  }, true);
+}
