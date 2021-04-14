@@ -63,3 +63,13 @@ export function getCollaborators(cc) {
   });
   return collaborators.join(", ");
 }
+
+export function isPlayer(email, players) {
+  let i;
+  for (i = 0; i < players.length; i++) {
+    if (players[i].email == email) {
+      return true
+    }
+  }
+  return false
+}

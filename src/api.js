@@ -64,3 +64,10 @@ export function createPS(quizID) {
     })
   }, true);
 }
+
+export function joinPS(code) {
+  return ajaxFetchCall("/ps/join/" + code, {
+    method: "POST",
+    body: JSON.stringify({})
+  }, true);
+}
