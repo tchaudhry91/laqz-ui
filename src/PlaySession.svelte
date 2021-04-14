@@ -63,8 +63,8 @@
         </h1>
 
         {#if !isPlayer(user.email, ps.users)}
-            <div class="block">
-                <button class="is-primary is-large" on:click={handleJoin}
+            <div class="block has-text-centered mt-6">
+                <button class="button is-primary" on:click={handleJoin}
                     >Join</button
                 >
             </div>
