@@ -1,6 +1,11 @@
 <script>
-    import { getPS, getQuiz, joinPS } from "./api";
-    import { getCollaborators, isPlayer } from "./utils";
+    import { addPlayerToTeam, addTeam, getPS, getQuiz, joinPS } from "./api";
+    import {
+        getCollaborators,
+        isPlayer,
+        isQuizMaster,
+        hasUserJoinedTeam,
+    } from "./utils";
 
     export let user;
     export let quizID;
@@ -9,6 +14,9 @@
     let psPromise = getPS(code);
     let quiz;
     let ps;
+    let teamName;
+
+    let showAddTeamModal = false;
 
     let ws = new WebSocket("ws://localhost:8080/ps/ws/" + code);
     ws.onopen = function (e) {
@@ -35,9 +43,29 @@
         console.log(`[error] ${error.message}`);
     };
 
+    function handleShowAddTeamModal() {
+        showAddTeamModal = true;
+    }
+    function cancelAddTeamModal() {
+        showAddTeamModal = false;
+    }
+
+    async function handleAddTeam(e) {
+        e.preventDefault();
+        try {
+            await addTeam(code, teamName);
+        } finally {
+            showAddTeamModal = false;
+        }
+    }
+
     async function handleJoin(e) {
         e.preventDefault();
         await joinPS(code);
+    }
+
+    async function handleJoinTeam(teamName) {
+        await addPlayerToTeam(code, teamName, user.email);
     }
 </script>
 
@@ -68,6 +96,102 @@
                     >Join</button
                 >
             </div>
+        {:else}
+            <div class="block mt-6" />
         {/if}
+
+        {#if isQuizMaster(user.email, ps) && ps.state == "INITIALIZED"}
+            <div class="block has-text-centered">
+                <button class="button is-link" on:click={handleShowAddTeamModal}
+                    >Add Team</button
+                >
+            </div>
+            <div class="modal {showAddTeamModal === true ? 'is-active' : ''}">
+                <div class="modal-background" />
+                <div class="modal-content">
+                    <div class="field">
+                        <h1 class="subtitle has-text-light">Enter Team Name</h1>
+                        <input
+                            bind:value={teamName}
+                            class="input"
+                            type="text"
+                            placeholder="Langoors"
+                        />
+                    </div>
+                    <div class="block">
+                        <button
+                            on:click={handleAddTeam}
+                            class=" button is-centered has-text-centered is-primary is-light"
+                            >Add</button
+                        >
+                        <button
+                            on:click={cancelAddTeamModal}
+                            class=" button is-centered has-text-centered is-danger is-light"
+                            >Cancel</button
+                        >
+                    </div>
+                </div>
+            </div>
+        {/if}
+
+        <div class="block">
+            <table class="table centerify is-striped">
+                <thead>
+                    <tr>
+                        <th>Team</th>
+                        <th class="has-text-centered" style="width:10rem"
+                            >Players</th
+                        >
+                        <th>Points</th>
+                        <th>Join</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {#each ps.teams as team}
+                        <tr>
+                            <td>
+                                {team.name}
+                            </td>
+                            <td class="has-text-centered">
+                                {#each team.users as u}
+                                    <span>
+                                        <figure
+                                            style="display:inline-block"
+                                            class="image is-32x32"
+                                        >
+                                            <img
+                                                class="is-rounded"
+                                                alt={u.name}
+                                                src={u.avatar_url}
+                                            />
+                                        </figure>
+                                    </span>
+                                {/each}
+                            </td>
+                            <td class="has-text-centered">
+                                {team.points}
+                            </td>
+                            <td>
+                                <button
+                                    on:click={() => {
+                                        handleJoinTeam(team.name);
+                                    }}
+                                    class="button is-small is-primary"
+                                    disabled={hasUserJoinedTeam(user.email, ps)}
+                                    >Join</button
+                                >
+                            </td>
+                        </tr>
+                    {/each}
+                </tbody>
+            </table>
+        </div>
     {/await}
 </div>
+
+<style>
+    .centerify {
+        margin-right: auto;
+        margin-left: auto;
+    }
+</style>

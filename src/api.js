@@ -71,3 +71,23 @@ export function joinPS(code) {
     body: JSON.stringify({})
   }, true);
 }
+
+export function addTeam(code, teamName) {
+  return ajaxFetchCall("/ps/" + code + "/addTeam", {
+    method: "POST",
+    body: JSON.stringify({
+      "team_name": teamName
+    })
+  }, true);
+}
+
+export function addPlayerToTeam(code, teamName, email) {
+  return ajaxFetchCall("/ps/" + code + "/assignTeamToUser",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        "team_name": teamName,
+        "email": email,
+      })
+    }, true);
+}

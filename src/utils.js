@@ -73,3 +73,20 @@ export function isPlayer(email, players) {
   }
   return false
 }
+
+export function isQuizMaster(email, ps) {
+  return (email == ps.quiz_master)
+}
+
+export function hasUserJoinedTeam(email, ps) {
+  let i;
+  for (i = 0; i < ps.teams.length; i++) {
+    let j;
+    for (j = 0; j < ps.teams[i].users.length; j++) {
+      if (ps.teams[i].users[j].email == email) {
+        return true
+      }
+    }
+  }
+  return false;
+}
