@@ -91,3 +91,31 @@ export function addPlayerToTeam(code, teamName, email) {
       })
     }, true);
 }
+
+export function startPS(code) {
+  return ajaxFetchCall("/ps/" + code + "/start",
+    {
+      method: "POST"
+    }, true);
+}
+
+export function nextQuestion(code) {
+  return ajaxFetchCall("/ps/" + code + "/next",
+    {
+      method: "POST"
+    }, true);
+}
+
+export function prevQuestion(code) {
+  return ajaxFetchCall("/ps/" + code + "/prev",
+    {
+      method: "POST"
+    }, true);
+}
+
+export function revealAnswer(code) {
+  return ajaxFetchCall("/ps/" + code + "/reveal",
+    {
+      method: "POST"
+    }, true);
+}

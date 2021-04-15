@@ -1,5 +1,17 @@
 <script>
-    import { addPlayerToTeam, addTeam, getPS, getQuiz, joinPS } from "./api";
+    import { onDestroy, afterUpdate } from "svelte";
+
+    import {
+        addPlayerToTeam,
+        addTeam,
+        getPS,
+        getQuiz,
+        joinPS,
+        nextQuestion,
+        prevQuestion,
+        revealAnswer,
+        startPS,
+    } from "./api";
     import {
         getCollaborators,
         isPlayer,
@@ -59,17 +71,78 @@
         }
     }
 
+    async function handleStart() {
+        await startPS(code);
+    }
+
     async function handleJoin(e) {
         e.preventDefault();
         await joinPS(code);
     }
 
+    async function handleNext() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        await nextQuestion(code);
+    }
+
+    async function handlePrev() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        await prevQuestion(code);
+    }
+
     async function handleJoinTeam(teamName) {
         await addPlayerToTeam(code, teamName, user.email);
     }
+
+    async function reveal() {
+        clearInterval(timerInterval);
+        await revealAnswer(code);
+    }
+
+    let showTimer = false;
+    let timerPercent = 0;
+    let secondsElapsed = 0;
+    let timerInterval;
+
+    function showTimerIfNotVisible() {
+        showTimer = true;
+    }
+
+    function updateTimer(total_seconds) {
+        timerPercent = Math.ceil(
+            ((secondsElapsed * 1.0) / total_seconds) * 100
+        );
+        if (timerPercent >= 100) {
+            timerPercent = 100;
+            clearInterval(timerInterval);
+        }
+        secondsElapsed += 1;
+    }
+
+    afterUpdate(async () => {
+        psPromise.then((resp) => {
+            if (timerInterval) {
+                return;
+            }
+            if (resp.play_session.current_question) {
+                secondsElapsed = 0;
+                timerInterval = setInterval(function () {
+                    updateTimer(
+                        resp.play_session.current_question.timer_seconds
+                    );
+                }, 1000);
+            }
+        });
+    });
+
+    onDestroy(() => {
+        clearInterval(timerInterval);
+    });
 </script>
 
-<div class="box mt-5">
+<div class="box mt-5 wd-70 centerify">
     {#await quizPromise then resp}
         <div class="is-hidden">{(quiz = resp.quiz)}</div>
         <div class="block">
@@ -79,6 +152,13 @@
             <h1 class="subtitle has-text-centered">Join Code: {code}</h1>
         </div>
     {/await}
+    <progress
+        class="progress {timerPercent == 100
+            ? 'is-danger'
+            : 'is-info'} {showTimer ? '' : 'is-hidden'}"
+        value={timerPercent}
+        max="100">{timerPercent}%</progress
+    >
     {#await psPromise then psResp}
         <div class="is-hidden">{(ps = psResp.play_session)}</div>
         <h1 class="is-size-7 has-text-centered">
@@ -89,10 +169,34 @@
             <strong>Players : </strong>
             {getCollaborators(ps.users)}
         </h1>
-
+        {#if ps && ps.current_question}
+            <div
+                class="box has-background-light mt-5 mb-5 has-text-centered wd-70 centerify"
+            >
+                <h1 use:showTimerIfNotVisible class="subtitle">
+                    Q{ps.current_question_index + 1}: {ps.current_question.text}
+                    <span class="tag is-primary is-light"
+                        >{ps.current_question.points} points</span
+                    >
+                </h1>
+                {#if ps.current_answer}
+                    <h1 class="is-size-6">
+                        Answer: {ps.current_answer}
+                    </h1>
+                {:else}
+                    <div class="block">
+                        <button
+                            on:click={reveal}
+                            class="button is-dark is-small"
+                            >Reveal Answer</button
+                        >
+                    </div>
+                {/if}
+            </div>
+        {/if}
         {#if !isPlayer(user.email, ps.users)}
             <div class="block has-text-centered mt-6">
-                <button class="button is-primary" on:click={handleJoin}
+                <button class="button is-primary is-small" on:click={handleJoin}
                     >Join</button
                 >
             </div>
@@ -102,8 +206,12 @@
 
         {#if isQuizMaster(user.email, ps) && ps.state == "INITIALIZED"}
             <div class="block has-text-centered">
-                <button class="button is-link" on:click={handleShowAddTeamModal}
-                    >Add Team</button
+                <button
+                    class="button is-dark is-small"
+                    on:click={handleShowAddTeamModal}>Add Team</button
+                >
+                <button class="button is-dark is-small" on:click={handleStart}
+                    >Start</button
                 >
             </div>
             <div class="modal {showAddTeamModal === true ? 'is-active' : ''}">
@@ -131,6 +239,15 @@
                         >
                     </div>
                 </div>
+            </div>
+        {:else if isQuizMaster(user.email, ps) && (ps.state == "INPROGRESS" || ps.state == "FINISHED")}
+            <div class="block has-text-centered">
+                <button on:click={handlePrev} class="button is-dark is-small"
+                    >Prev</button
+                >
+                <button on:click={handleNext} class="button is-dark is-small"
+                    >Next</button
+                >
             </div>
         {/if}
 
@@ -193,5 +310,8 @@
     .centerify {
         margin-right: auto;
         margin-left: auto;
+    }
+    .wd-70 {
+        width: 70%;
     }
 </style>

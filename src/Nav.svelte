@@ -4,6 +4,8 @@
 
     export let user;
 
+    let showMenu = false;
+
     const login = () => {
         auth.signInWithPopup(googleProvider);
     };
@@ -12,6 +14,10 @@
         auth.signOut();
         user = null;
     };
+
+    function toggleMenu() {
+        showMenu = !showMenu;
+    }
 </script>
 
 <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
@@ -19,9 +25,20 @@
         <Link to="/">
             <h1 class="navbar-item title has-text-light">LAQZ</h1>
         </Link>
+        <a
+            role="button"
+            class="navbar-burger"
+            aria-label="menu"
+            aria-expanded="false"
+            on:click={toggleMenu}
+        >
+            <span aria-hidden="true" />
+            <span aria-hidden="true" />
+            <span aria-hidden="true" />
+        </a>
     </div>
 
-    <div class="navbar-menu is-active">
+    <div class="navbar-menu {showMenu ? 'is-active' : ''}">
         <div class="navbar-start">
             <Link class="navbar-item" to="/">Home</Link>
 
