@@ -3,6 +3,7 @@
 
     import {
         addPlayerToTeam,
+        addPointsToTeam,
         addTeam,
         getPS,
         getQuiz,
@@ -12,6 +13,7 @@
         revealAnswer,
         startPS,
     } from "./api";
+    import { LAQZBackendURL } from "./config";
     import {
         getCollaborators,
         isPlayer,
@@ -30,7 +32,7 @@
 
     let showAddTeamModal = false;
 
-    let ws = new WebSocket("ws://localhost:8080/ps/ws/" + code);
+    let ws = new WebSocket("ws://" + LAQZBackendURL + "/ps/ws/" + code);
     ws.onopen = function (e) {
         console.log(code + ":Connection established");
     };
@@ -121,6 +123,10 @@
         secondsElapsed += 1;
     }
 
+    function handleAddPoints(teamName, points) {
+        addPointsToTeam(code, points, teamName);
+    }
+
     afterUpdate(async () => {
         psPromise.then((resp) => {
             if (timerInterval) {
@@ -194,7 +200,7 @@
                 {/if}
             </div>
         {/if}
-        {#if !isPlayer(user.email, ps.users)}
+        {#if !isPlayer(user.email, ps.users) && ps.state == "INITIALIZED"}
             <div class="block has-text-centered mt-6">
                 <button class="button is-primary is-small" on:click={handleJoin}
                     >Join</button
@@ -261,6 +267,9 @@
                         >
                         <th>Points</th>
                         <th>Join</th>
+                        {#if isQuizMaster(user.email, ps)}
+                            <th>Award</th>
+                        {/if}
                     </tr>
                 </thead>
                 <tbody>
@@ -298,6 +307,21 @@
                                     >Join</button
                                 >
                             </td>
+                            {#if isQuizMaster(user.email, ps) && ps.state != "INITIALIZED"}
+                                <td
+                                    ><button
+                                        class="button is-small is-primary"
+                                        on:click={() => {
+                                            handleAddPoints(
+                                                team.name,
+                                                psResp.play_session
+                                                    .current_question.points
+                                            );
+                                        }}
+                                        >{ps.current_question.points} points</button
+                                    ></td
+                                >
+                            {/if}
                         </tr>
                     {/each}
                 </tbody>

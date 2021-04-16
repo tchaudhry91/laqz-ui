@@ -119,3 +119,14 @@ export function revealAnswer(code) {
       method: "POST"
     }, true);
 }
+
+export function addPointsToTeam(code, points, team) {
+  return ajaxFetchCall("/ps/" + code + "/addPoints",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        "team_name": team,
+        "points": parseInt(points)
+      })
+    }, true);
+}
