@@ -2,4 +2,7 @@ creds.env
 /node_modules/
 /public/build/
 
+firebase-debug.log
+.firebase/*
+
 .DS_Store

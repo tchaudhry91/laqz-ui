@@ -4,3 +4,7 @@ tasks:
     run:
         cmds:
             - HOST=0.0.0.0 npm run dev
+    deploy-firebase:
+        cmds:
+            - npm run build
+            - firebase deploy --only hosting

@@ -1,1 +1,1 @@
-export const LAQZBackendURL = LAQZ_BACKEND
+export const LAQZBackendURL = "https://laqz-svc.tux-sudo.com"
