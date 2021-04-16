@@ -99,6 +99,14 @@ export function startPS(code) {
     }, true);
 }
 
+
+export function endPS(code) {
+  return ajaxFetchCall("/ps/" + code + "/end",
+    {
+      method: "POST"
+    }, true);
+}
+
 export function nextQuestion(code) {
   return ajaxFetchCall("/ps/" + code + "/next",
     {

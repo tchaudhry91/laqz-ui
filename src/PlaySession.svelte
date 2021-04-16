@@ -12,6 +12,7 @@
         prevQuestion,
         revealAnswer,
         startPS,
+        endPS,
     } from "./api";
     import { LAQZWSURL } from "./config";
     import {
@@ -77,6 +78,11 @@
         await startPS(code);
     }
 
+    async function handleEnd() {
+        await endPS(code);
+        hideTimer();
+    }
+
     async function handleJoin(e) {
         e.preventDefault();
         await joinPS(code);
@@ -108,8 +114,15 @@
     let secondsElapsed = 0;
     let timerInterval;
 
-    function showTimerIfNotVisible() {
+    function showTimerIfNotVisible(node, state) {
+        if (state == "FINISHED") {
+            return;
+        }
         showTimer = true;
+    }
+
+    function hideTimer() {
+        showTimer = false;
     }
 
     function updateTimer(total_seconds) {
@@ -179,7 +192,7 @@
             <div
                 class="box has-background-light mt-5 mb-5 has-text-centered wd-70 centerify"
             >
-                <h1 use:showTimerIfNotVisible class="subtitle">
+                <h1 use:showTimerIfNotVisible={ps.state} class="subtitle">
                     Q{ps.current_question_index + 1}: {ps.current_question.text}
                     <span class="tag is-primary is-light"
                         >{ps.current_question.points} points</span
@@ -256,6 +269,22 @@
                 >
             </div>
         {/if}
+        {#if isQuizMaster(user.email, ps) && ps.state != "FINISHED"}
+            <div class="block has-text-centered">
+                <button on:click={handleEnd} class="button is-danger is-small"
+                    >End Session</button
+                >
+            </div>
+        {/if}
+        {#if ps.state == "FINISHED"}
+            <div class="block has-text-centered">
+                <h1 class="subtitle">Session has ended</h1>
+            </div>
+        {:else}
+            <div class="block has-text-centered">
+                <h1 class="subtitle">Session is Live</h1>
+            </div>
+        {/if}
 
         <div class="block">
             <table class="table centerify is-striped">
@@ -307,7 +336,7 @@
                                     >Join</button
                                 >
                             </td>
-                            {#if isQuizMaster(user.email, ps) && ps.state != "INITIALIZED"}
+                            {#if isQuizMaster(user.email, ps) && ps.state == "INPROGRESS"}
                                 <td
                                     ><button
                                         class="button is-small is-primary"
