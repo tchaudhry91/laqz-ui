@@ -1,4 +1,4 @@
-import { ajaxFetchCall } from "./utils";
+import { ajaxFetchCall, ajaxFetchFormCall } from "./utils";
 
 export function getMyQuizzes() {
   return ajaxFetchCall("/quiz/list/user/", {
@@ -136,5 +136,13 @@ export function addPointsToTeam(code, points, team) {
         "team_name": team,
         "points": parseInt(points)
       })
+    }, true);
+}
+
+export function uploadAsset(formData) {
+  return ajaxFetchFormCall("/quiz/upload",
+    {
+      method: "POST",
+      body: formData
     }, true);
 }

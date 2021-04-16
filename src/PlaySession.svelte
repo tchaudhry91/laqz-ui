@@ -195,6 +195,15 @@
                         >{ps.current_question.points} points</span
                     >
                 </h1>
+                {#if ps.current_question.image_link}
+                    <figure class="image centerify mb-1.5 block">
+                        <img
+                            class="is-640by480 centerify"
+                            alt="questionImage"
+                            src={ps.current_question.image_link}
+                        />
+                    </figure>
+                {/if}
                 {#if ps.current_answer}
                     <h1 use:hideTimer class="is-size-6">
                         Answer: {ps.current_answer}
@@ -361,6 +370,10 @@
 </div>
 
 <style>
+    .is-640by480 {
+        width: auto;
+        max-height: 30rem;
+    }
     .centerify {
         margin-right: auto;
         margin-left: auto;

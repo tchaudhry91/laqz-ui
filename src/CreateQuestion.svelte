@@ -1,12 +1,14 @@
 <script>
     import { navigate } from "svelte-navigator";
-    import { addQuestion } from "./api";
+    import { addQuestion, uploadAsset } from "./api";
 
     export let quizID;
 
     let text;
+    let files;
     let answer;
     let points = 10;
+    let imageLink = "";
     let timer = 30;
     let showLoading = false;
     let showNext = false;
@@ -15,10 +17,22 @@
     async function addQuestionHandler(e) {
         e.preventDefault();
         showLoading = true;
-        await addQuestion(quizID, text, "", "", answer, points, timer);
+        await addQuestion(quizID, text, imageLink, "", answer, points, timer);
         showLoading = false;
         showNext = true;
         messageText = "Question Added Succesfully!";
+    }
+
+    async function handleUpload() {
+        const formData = new FormData();
+        formData.append("asset", files[0]);
+        try {
+            let resp;
+            resp = await uploadAsset(formData);
+            imageLink = resp.url;
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     function backToQuiz(e) {
@@ -59,6 +73,16 @@
                 min="0"
                 placeholder="10"
             />
+        </div>
+        <div class="field">
+            <label for="fileupload" class="label">Accompanying Image</label>
+            <input class="input" type="text" disabled bind:value={imageLink} />
+            <div class="block mt-5">
+                <input id="fileUpload" type="file" bind:files />
+                <button on:click={handleUpload} class="button is-small"
+                    >Upload</button
+                >
+            </div>
         </div>
         <div class="field">
             <label class="label" for="qanswer">Answer</label>
