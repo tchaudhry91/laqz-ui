@@ -13,7 +13,7 @@
         revealAnswer,
         startPS,
     } from "./api";
-    import { LAQZBackendURL } from "./config";
+    import { LAQZWSURL } from "./config";
     import {
         getCollaborators,
         isPlayer,
@@ -32,7 +32,7 @@
 
     let showAddTeamModal = false;
 
-    let ws = new WebSocket("ws://" + LAQZBackendURL + "/ps/ws/" + code);
+    let ws = new WebSocket(LAQZWSURL + "/ps/ws/" + code);
     ws.onopen = function (e) {
         console.log(code + ":Connection established");
     };
