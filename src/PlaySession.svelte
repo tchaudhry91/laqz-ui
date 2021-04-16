@@ -80,7 +80,6 @@
 
     async function handleEnd() {
         await endPS(code);
-        hideTimer();
     }
 
     async function handleJoin(e) {
@@ -89,14 +88,10 @@
     }
 
     async function handleNext() {
-        clearInterval(timerInterval);
-        timerInterval = null;
         await nextQuestion(code);
     }
 
     async function handlePrev() {
-        clearInterval(timerInterval);
-        timerInterval = null;
         await prevQuestion(code);
     }
 
@@ -112,6 +107,7 @@
     let showTimer = false;
     let timerPercent = 0;
     let secondsElapsed = 0;
+    let timerIndex = -1;
     let timerInterval;
 
     function showTimerIfNotVisible(node, state) {
@@ -133,28 +129,29 @@
             timerPercent = 100;
             clearInterval(timerInterval);
         }
-        secondsElapsed += 1;
+        secondsElapsed += 0.1;
     }
 
     function handleAddPoints(teamName, points) {
         addPointsToTeam(code, points, teamName);
     }
 
-    afterUpdate(async () => {
-        psPromise.then((resp) => {
-            if (timerInterval) {
-                return;
-            }
-            if (resp.play_session.current_question) {
-                secondsElapsed = 0;
+    function resetTimer(node, index) {
+        if (index != timerIndex) {
+            clearInterval(timerInterval);
+            secondsElapsed = 0;
+            timerInterval = null;
+            psPromise.then((resp) => {
                 timerInterval = setInterval(function () {
                     updateTimer(
                         resp.play_session.current_question.timer_seconds
                     );
-                }, 1000);
-            }
-        });
-    });
+                }, 100);
+            });
+            showTimer = true;
+            timerIndex = index;
+        }
+    }
 
     onDestroy(() => {
         clearInterval(timerInterval);
@@ -192,14 +189,14 @@
             <div
                 class="box has-background-light mt-5 mb-5 has-text-centered centerify"
             >
-                <h1 use:showTimerIfNotVisible={ps.state} class="subtitle">
+                <h1 use:resetTimer={ps.current_question_index} class="subtitle">
                     Q{ps.current_question_index + 1}: {ps.current_question.text}
                     <span class="tag is-primary is-light"
                         >{ps.current_question.points} points</span
                     >
                 </h1>
                 {#if ps.current_answer}
-                    <h1 class="is-size-6">
+                    <h1 use:hideTimer class="is-size-6">
                         Answer: {ps.current_answer}
                     </h1>
                 {:else if isQuizMaster(user.email, ps)}
@@ -278,7 +275,7 @@
         {/if}
         {#if ps.state == "FINISHED"}
             <div class="block has-text-centered">
-                <h1 class="subtitle">Session has ended</h1>
+                <h1 use:hideTimer class="subtitle">Session has ended</h1>
             </div>
         {:else}
             <div class="block has-text-centered">
