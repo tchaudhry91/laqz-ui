@@ -27,7 +27,7 @@
     }
 </script>
 
-<div class="box mt-5 wd-60 centerify">
+<div class="box mt-5 centerify">
     <div class="block">
         <h2 class="has-text-centered title">Add a Question</h2>
     </div>
@@ -109,8 +109,5 @@
     .centerify {
         margin-right: auto;
         margin-left: auto;
-    }
-    .wd-60 {
-        max-width: 60%;
     }
 </style>

@@ -54,7 +54,7 @@
     }
 </script>
 
-<div class="box wd-60 mt-5 centerify">
+<div class="box mt-5 centerify">
     {#await quizPromise then resp}
         <div class="block has-text-centered">
             <h1 class="title centerify">{resp.quiz.name}</h1>
@@ -122,9 +122,6 @@
 </div>
 
 <style>
-    .wd-60 {
-        max-width: 60%;
-    }
     .centerify {
         margin-right: auto;
         margin-left: auto;

@@ -161,7 +161,7 @@
     });
 </script>
 
-<div class="box mt-5 wd-70 centerify">
+<div class="box mt-5 centerify">
     {#await quizPromise then resp}
         <div class="is-hidden">{(quiz = resp.quiz)}</div>
         <div class="block">
@@ -190,7 +190,7 @@
         </h1>
         {#if ps && ps.current_question}
             <div
-                class="box has-background-light mt-5 mb-5 has-text-centered wd-70 centerify"
+                class="box has-background-light mt-5 mb-5 has-text-centered centerify"
             >
                 <h1 use:showTimerIfNotVisible={ps.state} class="subtitle">
                     Q{ps.current_question_index + 1}: {ps.current_question.text}
@@ -287,74 +287,78 @@
         {/if}
 
         <div class="block">
-            <table class="table centerify is-striped">
-                <thead>
-                    <tr>
-                        <th>Team</th>
-                        <th class="has-text-centered" style="width:10rem"
-                            >Players</th
-                        >
-                        <th>Points</th>
-                        <th>Join</th>
-                        {#if isQuizMaster(user.email, ps)}
-                            <th>Award</th>
-                        {/if}
-                    </tr>
-                </thead>
-                <tbody>
-                    {#each ps.teams as team}
+            <div class="container table-wrapper">
+                <table class="table centerify is-striped">
+                    <thead>
                         <tr>
-                            <td>
-                                {team.name}
-                            </td>
-                            <td class="has-text-centered">
-                                {#each team.users as u}
-                                    <span>
-                                        <figure
-                                            style="display:inline-block"
-                                            class="image is-32x32"
-                                        >
-                                            <img
-                                                class="is-rounded"
-                                                alt={u.name}
-                                                src={u.avatar_url}
-                                            />
-                                        </figure>
-                                    </span>
-                                {/each}
-                            </td>
-                            <td class="has-text-centered">
-                                {team.points}
-                            </td>
-                            <td>
-                                <button
-                                    on:click={() => {
-                                        handleJoinTeam(team.name);
-                                    }}
-                                    class="button is-small is-primary"
-                                    disabled={hasUserJoinedTeam(user.email, ps)}
-                                    >Join</button
-                                >
-                            </td>
-                            {#if isQuizMaster(user.email, ps) && ps.state == "INPROGRESS"}
-                                <td
-                                    ><button
-                                        class="button is-small is-primary"
-                                        on:click={() => {
-                                            handleAddPoints(
-                                                team.name,
-                                                psResp.play_session
-                                                    .current_question.points
-                                            );
-                                        }}
-                                        >{ps.current_question.points} points</button
-                                    ></td
-                                >
+                            <th>Team</th>
+                            <th class="has-text-centered" style="width:10rem"
+                                >Players</th
+                            >
+                            <th>Points</th>
+                            <th>Join</th>
+                            {#if isQuizMaster(user.email, ps)}
+                                <th>Award</th>
                             {/if}
                         </tr>
-                    {/each}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {#each ps.teams as team}
+                            <tr>
+                                <td>
+                                    {team.name}
+                                </td>
+                                <td class="has-text-centered">
+                                    {#each team.users as u}
+                                        <span>
+                                            <figure
+                                                style="display:inline-block"
+                                                class="image is-32x32"
+                                            >
+                                                <img
+                                                    class="is-rounded"
+                                                    alt={u.name}
+                                                    src={u.avatar_url}
+                                                />
+                                            </figure>
+                                        </span>
+                                    {/each}
+                                </td>
+                                <td class="has-text-centered">
+                                    {team.points}
+                                </td>
+                                <td>
+                                    <button
+                                        on:click={() => {
+                                            handleJoinTeam(team.name);
+                                        }}
+                                        class="button is-small is-primary"
+                                        disabled={hasUserJoinedTeam(
+                                            user.email,
+                                            ps
+                                        )}>Join</button
+                                    >
+                                </td>
+                                {#if isQuizMaster(user.email, ps) && ps.state == "INPROGRESS"}
+                                    <td
+                                        ><button
+                                            class="button is-small is-primary"
+                                            on:click={() => {
+                                                handleAddPoints(
+                                                    team.name,
+                                                    psResp.play_session
+                                                        .current_question.points
+                                                );
+                                            }}
+                                            >{ps.current_question.points} points</button
+                                        ></td
+                                    >
+                                {/if}
+                            </tr>
+                        {/each}
+                    </tbody>
+                </table>
+            </div>
         </div>
     {/await}
 </div>
@@ -364,7 +368,7 @@
         margin-right: auto;
         margin-left: auto;
     }
-    .wd-70 {
-        width: 70%;
+    .table-wrapper {
+        overflow-x: auto;
     }
 </style>
