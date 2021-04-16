@@ -202,7 +202,7 @@
                     <h1 class="is-size-6">
                         Answer: {ps.current_answer}
                     </h1>
-                {:else}
+                {:else if isQuizMaster(user.email, ps)}
                     <div class="block">
                         <button
                             on:click={reveal}
