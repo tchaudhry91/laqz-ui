@@ -177,14 +177,16 @@
     >
     {#await psPromise then psResp}
         <div class="is-hidden">{(ps = psResp.play_session)}</div>
-        <h1 class="is-size-7 has-text-centered">
-            <strong>Quiz Master : </strong>
-            {ps.quiz_master}
-        </h1>
-        <h1 class="is-size-7 has-text-centered">
-            <strong>Players : </strong>
-            {getCollaborators(ps.users)}
-        </h1>
+        {#if ps && ps.state != "INPROGRESS"}
+            <h1 class="is-size-7 has-text-centered">
+                <strong>Quiz Master : </strong>
+                {ps.quiz_master}
+            </h1>
+            <h1 class="is-size-7 has-text-centered">
+                <strong>Players : </strong>
+                {getCollaborators(ps.users)}
+            </h1>
+        {/if}
         {#if ps && ps.current_question}
             <div
                 class="box has-background-light mt-5 mb-5 has-text-centered centerify"
@@ -208,7 +210,7 @@
                     <h1 use:hideTimer class="is-size-6">
                         Answer: {ps.current_answer}
                     </h1>
-                {:else if isQuizMaster(user.email, ps)}
+                {:else if isQuizMaster(user.email, ps) && ps.state == "INPROGRESS"}
                     <div class="block">
                         <button
                             on:click={reveal}
