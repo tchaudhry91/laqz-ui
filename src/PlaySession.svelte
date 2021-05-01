@@ -31,6 +31,8 @@
     let ps;
     let teamName;
 
+    let pointsCurrent = 0;
+
     let showAddTeamModal = false;
 
     let ws = new WebSocket(LAQZWSURL + "/ps/ws/" + code);
@@ -57,6 +59,10 @@
     ws.onerror = function (error) {
         console.log(`[error] ${error.message}`);
     };
+
+    function resetPointsCurrent(points) {
+        pointsCurrent = 0;
+    }
 
     function handleShowAddTeamModal() {
         showAddTeamModal = true;
@@ -193,7 +199,9 @@
             >
                 <h1 use:resetTimer={ps.current_question_index} class="subtitle">
                     Q{ps.current_question_index + 1}: {ps.current_question.text}
-                    <span class="tag is-primary is-light"
+                    <span
+                        use:resetPointsCurrent={ps.current_question.points}
+                        class="tag is-primary is-light"
                         >{ps.current_question.points} points</span
                     >
                 </h1>
@@ -294,80 +302,89 @@
             </div>
         {/if}
 
-        <div class="block">
-            <div class="container table-wrapper">
-                <table class="table centerify is-striped">
-                    <thead>
-                        <tr>
-                            <th>Team</th>
-                            <th class="has-text-centered" style="width:10rem"
-                                >Players</th
-                            >
-                            <th>Points</th>
-                            <th>Join</th>
-                            {#if isQuizMaster(user.email, ps)}
-                                <th>Award</th>
-                            {/if}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {#each ps.teams as team}
+        {#if ps && ps.teams}
+            <div class="block">
+                <div class="container table-wrapper">
+                    <table class="table centerify is-striped">
+                        <thead>
                             <tr>
-                                <td>
-                                    {team.name}
-                                </td>
-                                <td class="has-text-centered">
-                                    {#each team.users as u}
-                                        <span>
-                                            <figure
-                                                style="display:inline-block"
-                                                class="image is-32x32"
-                                            >
-                                                <img
-                                                    class="is-rounded"
-                                                    alt={u.name}
-                                                    src={u.avatar_url}
-                                                />
-                                            </figure>
-                                        </span>
-                                    {/each}
-                                </td>
-                                <td class="has-text-centered">
-                                    {team.points}
-                                </td>
-                                <td>
-                                    <button
-                                        on:click={() => {
-                                            handleJoinTeam(team.name);
-                                        }}
-                                        class="button is-small is-primary"
-                                        disabled={hasUserJoinedTeam(
-                                            user.email,
-                                            ps
-                                        )}>Join</button
-                                    >
-                                </td>
-                                {#if isQuizMaster(user.email, ps) && ps.state == "INPROGRESS"}
-                                    <td
-                                        ><button
-                                            class="button is-small is-primary"
-                                            on:click={() => {
-                                                handleAddPoints(
-                                                    team.name,
-                                                    psResp.play_session
-                                                        .current_question.points
-                                                );
-                                            }}
-                                            >{ps.current_question.points} points</button
-                                        ></td
-                                    >
+                                <th>Team</th>
+                                <th
+                                    class="has-text-centered"
+                                    style="width:10rem">Players</th
+                                >
+                                <th>Points</th>
+                                <th>Join</th>
+                                {#if isQuizMaster(user.email, ps)}
+                                    <th>Award</th>
                                 {/if}
                             </tr>
-                        {/each}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {#each ps.teams as team}
+                                <tr>
+                                    <td>
+                                        {team.name}
+                                    </td>
+                                    <td class="has-text-centered">
+                                        {#each team.users as u}
+                                            <span>
+                                                <figure
+                                                    style="display:inline-block"
+                                                    class="image is-32x32"
+                                                >
+                                                    <img
+                                                        class="is-rounded"
+                                                        alt={u.name}
+                                                        src={u.avatar_url}
+                                                    />
+                                                </figure>
+                                            </span>
+                                        {/each}
+                                    </td>
+                                    <td class="has-text-centered">
+                                        {team.points}
+                                    </td>
+                                    <td>
+                                        <button
+                                            on:click={() => {
+                                                handleJoinTeam(team.name);
+                                            }}
+                                            class="button is-small is-primary"
+                                            disabled={hasUserJoinedTeam(
+                                                user.email,
+                                                ps
+                                            )}>Join</button
+                                        >
+                                    </td>
+                                    {#if isQuizMaster(user.email, ps) && ps.state == "INPROGRESS"}
+                                        <td
+                                            ><input
+                                                bind:value={pointsCurrent}
+                                                class="input is-small"
+                                                style="width: 30px"
+                                                type="numeric"
+                                            />
+                                            <button
+                                                class="button is-small is-primary"
+                                                on:click={() => {
+                                                    handleAddPoints(
+                                                        team.name,
+                                                        pointsCurrent
+                                                    );
+                                                }}
+                                            >
+                                                Award</button
+                                            ></td
+                                        >
+                                    {/if}
+                                </tr>
+                            {/each}
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
+        {/if}
     {/await}
 </div>
 
