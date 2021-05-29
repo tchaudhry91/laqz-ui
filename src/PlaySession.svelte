@@ -321,7 +321,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {#each ps.teams as team}
+                            {#each ps.teams.sort( (a, b) => (a.ID > b.ID ? 1 : -1) ) as team}
                                 <tr>
                                     <td>
                                         {team.name}
