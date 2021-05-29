@@ -41,12 +41,46 @@ export function addQuestion(quizID, text, imageLink, audioLink, answer, points, 
   }, true);
 }
 
+export function updateQuestion(id, quizID, text, imageLink, audioLink, answer, points, timerSeconds) {
+  return ajaxFetchCall("/quiz/" + quizID + "/editQuestion", {
+    method: "PATCH",
+    body: JSON.stringify({
+      "id": parseInt(id),
+      "quiz_id": parseInt(quizID),
+      "text": text,
+      "image_link": imageLink,
+      "audio_link": audioLink,
+      "answer": answer,
+      "points": parseInt(points),
+      "timer_seconds": parseInt(timerSeconds),
+    })
+  }, true);
+}
+
 export function toggleVisibility(quizID) {
   return ajaxFetchCall("/quiz/" + quizID + "/toggleVisibility", {
     method: "PATCH",
     body: JSON.stringify({
       "quiz_id": parseInt(quizID)
     })
+  }, true);
+}
+
+export function getQuestions(quizID) {
+  return ajaxFetchCall("/quiz/" + quizID + "/viewQuestions", {
+    method: "GET",
+  }, true);
+}
+
+export function deleteQuestion(quizID, questionID) {
+  return ajaxFetchCall("/quiz/" + quizID + "/deleteQuestion/" + questionID + "/", {
+    method: "DELETE",
+  }, true);
+}
+
+export function getQuestion(quizID, questionID) {
+  return ajaxFetchCall("/quiz/" + quizID + "/question/" + questionID + "/", {
+    method: "GET",
   }, true);
 }
 

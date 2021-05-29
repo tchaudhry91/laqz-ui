@@ -6,7 +6,9 @@
     import { authState } from "rxfire/auth";
     import { auth, googleProvider } from "./firebase";
     import QuizView from "./QuizView.svelte";
+    import QuestionsView from "./QuestionsView.svelte";
     import CreateQuestion from "./CreateQuestion.svelte";
+    import UpdateQuestion from "./UpdateQuestion.svelte";
     import PlaySession from "./PlaySession.svelte";
 
     let user;
@@ -43,8 +45,20 @@
                     <CreateQuestion quizID={params.id} {user} />
                 </Route>
             </Route>
+            <Route path="/update/*">
+                <Route path="/quiz/:id/question/:questionID/" let:params>
+                    <UpdateQuestion
+                        quizID={params.id}
+                        questionID={params.questionID}
+                        {user}
+                    />
+                </Route>
+            </Route>
             <Route path="/quiz/:id" let:params>
                 <QuizView quizID={params.id} {user} />
+            </Route>
+            <Route path="/quiz/:id/view" let:params>
+                <QuestionsView quizID={params.id} {user} />
             </Route>
             <Route path="/quiz/:id/play/:code" let:params>
                 <PlaySession quizID={params.id} {user} code={params.code} />

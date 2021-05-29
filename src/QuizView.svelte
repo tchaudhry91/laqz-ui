@@ -33,6 +33,10 @@
         navigate("/create/quiz/" + quizID + "/question");
     }
 
+    function handleViewQuestionsClick() {
+        navigate("/quiz/" + quizID + "/view");
+    }
+
     async function handlePlay() {
         // Create a new PlaySession
         const resp = await createPS(quizID);
@@ -83,6 +87,10 @@
                 <button
                     class="button is-primary is-small"
                     on:click={handleBuildQuestionsClick}>Add Questions</button
+                >
+                <button
+                    class="button is-primary is-small"
+                    on:click={handleViewQuestionsClick}>View/Edit</button
                 >
                 <button
                     class="button is-danger is-small"
