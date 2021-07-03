@@ -10,6 +10,7 @@
     import CreateQuestion from "./CreateQuestion.svelte";
     import UpdateQuestion from "./UpdateQuestion.svelte";
     import PlaySession from "./PlaySession.svelte";
+    import Endless from "./Endless.svelte";
 
     let user;
     const unsubscribe = authState(auth).subscribe((u) => (user = u));
@@ -62,6 +63,9 @@
             </Route>
             <Route path="/quiz/:id/play/:code" let:params>
                 <PlaySession quizID={params.id} {user} code={params.code} />
+            </Route>
+            <Route path="/endless">
+                <Endless />
             </Route>
         </div>
     </Router>

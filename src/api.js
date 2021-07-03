@@ -180,3 +180,18 @@ export function uploadAsset(formData) {
       body: formData
     }, true);
 }
+
+export async function getOTDBQuestion(category, difficulty) {
+  let baseURL = "https://opentdb.com/api.php?amount=1&type=multiple"
+  if (category.name != "Random") {
+    baseURL += "&category=" + category.id;
+  }
+
+  if (difficulty != "any") {
+    baseURL += "&difficulty=" + difficulty;
+  }
+  let resp = await fetch(baseURL);
+  let results = await resp.json();
+  let question = results.results[0];
+  return question
+}
