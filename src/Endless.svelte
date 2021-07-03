@@ -121,12 +121,10 @@
             selectedCategory,
             selectedDifficulty
         );
-        console.log(question);
-        questionText = question.question;
-        questionText = question.question;
+        questionText = question.question.replace(/&quot;/g, '\\"');
         questionCategory = question.category;
         questionDifficulty = question.difficulty;
-        answer = question.correct_answer;
+        answer = question.correct_answer.replace(/&quot;/g, '\\"');
 
         let tempOptions = [];
         tempOptions.push(...question.incorrect_answers);
