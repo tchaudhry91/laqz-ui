@@ -117,6 +117,10 @@
     let showAnswer = false;
 
     async function handleGenerate() {
+        if (selectedCategory.name === "Random") {
+            selectedCategory =
+                categories[Math.floor(Math.random() * categories.length)];
+        }
         let question = await getOTDBQuestion(
             selectedCategory,
             selectedDifficulty
